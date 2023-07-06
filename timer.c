@@ -1,76 +1,99 @@
 #include "timer.h"
 
-int check_cfg(timer_cfg* cfg){
-  if (cfg->period < 1){
-    printf("Incorrect Period Value");
-    return 0;
+#include "common.h"
+#include "queue.h"
+#include "prod-con.h"
+
+static void *stopFcn(void *args) {
+  Timer *t = (Timer *)args;
+
+  char filenameIn[32] = {};
+  sprintf(filenameIn, "%d-prod-%d time", t->expNum, t->period);
+  FILE *fIn = fopen(filenameIn, "w");
+
+  char filenameDrift[32] = {};
+  sprintf(filenameDrift, "%d-prod-%d drift", t->expNum, t->period);
+  FILE *fDrift = fopen(filenameDrift, "w");
+
+  for (int i=0; i<t->tasksToExecute; i++) {
+    fprintf(fIn, "%d\n", t->tIn[i]);
+    fprintf(fDrift, "%d\n", t->tDrift[i]);
   }
-  if (cfg->tasksToExecute < 0){
-    printf("Incorrect tasksToExecute Value");
-    return 0;
-  }
-  if (cfg->startDelay < 0){
-    printf("Incorrect startDelay Value");
-    return 0;
-  }
-  return 1;
+
+  fclose(fIn);
+  fclose(fDrift);
+
+  free(t->tIn);
+  free(t->tDrift);
 }
 
-timer_cfg make_cfg(int period, int tasksToExecute, int startDelay){
-  timer_cfg cfg;
-  cfg.period = period;
-  cfg.tasksToExecute = tasksToExecute;
-  cfg.startDelay = startDelay;
-  return cfg;
-}
 
-timer_t *StartFcn(timer_cfg* cfg){
-  timer_t *t;
+// TODO: Implement timerFcn().
 
-  t = (timer_t *) malloc(sizeof (timer_t));
+
+Timer *timerInit(int period, Queue *queue, int expNum) {
+  if (period < 1) {
+    fprintf (stderr, "timer: incorrect period\n");
+    return NULL;
+  }
+
+  Timer *t = (Timer *)malloc(sizeof(Timer));
   if (t == NULL) {
-    return (NULL);
-    printf("Error allocating memory for timer object");
+    fprintf (stderr, "timer: init failed.\n");
+    return NULL;
   }
 
+  t->period = period;
+  t->tasksToExecute = RUNTIME_SECS * 1000 / period;
+  t->startDelay = 0;
+  t->queue = queue;
+  t->expNum = expNum;
 
-  //remember to also free at delete
-  t->queue = queueInit();
+  t->startFcn = NULL;
+  t->stopFcn = stopFcn;
+  t->timerFcn = NULL;
+  t->errorFcn = NULL;
+
+  t->tIn = (int *)malloc(t->tasksToExecute * sizeof(int));
+  if (t->tIn == NULL) {
+    fprintf (stderr, "timer: tIn init failed.\n");
+    return NULL;
+  }
+  t->tDrift = (int *)malloc(t->tasksToExecute * sizeof(int));
+  if (t->tDrift == NULL) {
+    fprintf (stderr, "timer: tDrift init failed.\n");
+    return NULL;
+  }
   
-  t->period = cfg->period;
-  t->tasksToExecute = cfg->tasksToExecute;
-  t->startDelay = cfg->startDelay;
-
-  t->mut = (pthread_mutex_t *) malloc (sizeof (pthread_mutex_t));
-  pthread_mutex_init (t->mut, NULL);
-  t->notFull = (pthread_cond_t *) malloc (sizeof (pthread_cond_t));
-  pthread_cond_init (t->notFull, NULL);
-  t->notEmpty = (pthread_cond_t *) malloc (sizeof (pthread_cond_t));
-  pthread_cond_init (t->notEmpty, NULL);
-
-  for (int i=0; i<NUMBER_OF_THREADS; ++i){
-    t->consumerThreads[i] = (pthread_t *) malloc(sizeof(pthread_t));
-    if (t->consumerThreads[i] == NULL) {
-      return NULL;
-      printf("Error allocating memory for consumer threads");
-    }
-  }
+  return t;
 }
 
-void StopFcn(timer_t *t){
-  for (int i=0; i<NUMBER_OF_THREADS; ++i){
-    pthread_join(t->consumerThreads[i], NULL);
-  }
+void timerStart(Timer *t){
+  pthread_create(&t->proThread, NULL, producer, t);
+}
 
-  free(t->consumerThreads);
+void timerStartat(Timer *t, int year, int month, int day, int hour, int minute, int second) {
+  struct timeval currentTime;
+  gettimeofday(&currentTime, NULL);
 
-  pthread_mutex_destroy (t->mut);
-  free (t->mut);	
-  pthread_cond_destroy (t->notFull);
-  free (t->notFull);
-  pthread_cond_destroy (t->notEmpty);
-  free (t->notEmpty);
-  free (t->queue);
+  struct tm startTm;
+  startTm.tm_sec = second;
+  startTm.tm_min = minute;
+  startTm.tm_hour = hour;
+  startTm.tm_mday = day;
+  startTm.tm_mon = month - 1;
+  startTm.tm_year = year - 1970;
+  startTm.tm_isdst = -1;
 
-  free(t);
+  time_t startTime = mktime(&startTm);
+  int startDelay = (int)(startTime - currentTime.tv_sec);
+
+  sleep(startDelay);
+
+  timerStart(t);
+}
+
+// Function to calculate the time difference in milliseconds
+int getTimeDifference(struct timeval start, struct timeval end) {
+  return ((end.tv_sec - start.tv_sec) * 1000) + ((end.tv_usec - start.tv_usec) / 1000);
 }

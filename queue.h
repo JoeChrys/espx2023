@@ -3,20 +3,25 @@
 
 #include "common.h"
 
-typedef struct{
+typedef struct {
   void* (*jobFcn)(void *);
   void* data;
-} job_t;
+} Job;
 
 typedef struct {
-  job_t buf[QUEUE_SIZE];
+  Job buf[QUEUE_SIZE];
   long head, tail;
   int full, empty;
-} queue_t;
+  pthread_mutex_t *mut;
+  pthread_cond_t *notFull, *notEmpty;
+} Queue;
 
-queue_t *queueInit (void);
-void queueDelete (queue_t *q);
-void queueAdd (queue_t *q, job_t in);
-void queuePop (queue_t *q, job_t *out);
+Queue *queueInit(void);
 
-#endif
+void queueDelete(Queue *q);
+
+void queueAdd(Queue *q, Job in);
+
+void queuePop(Queue *q, Job *out);
+
+#endif /* QUEUE_H */
