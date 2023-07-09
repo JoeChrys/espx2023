@@ -1,18 +1,35 @@
+/*
+ *	File	: timer.c
+ *
+ *	Title	: Timer source code.
+ *
+ *	Short	: Function impenentations of a timer object.	
+ *
+ *	Long 	:
+ *
+ *	Author	: Iosif Chrysostomou
+ *
+ *	Date	: 
+ *
+ *	Revised	:
+ */
+
 #include "timer.h"
 
 #include "common.h"
 #include "queue.h"
 #include "prod-con.h"
+#include <math.h>
 
 static void *stopFcn(void *args) {
   Timer *t = (Timer *)args;
 
   char filenameIn[32] = {};
-  sprintf(filenameIn, "%d-prod-%d time", t->expNum, t->period);
+  sprintf(filenameIn, "exp%d-period%d-timeIn", t->expNum+1, t->period);
   FILE *fIn = fopen(filenameIn, "w");
 
   char filenameDrift[32] = {};
-  sprintf(filenameDrift, "%d-prod-%d drift", t->expNum, t->period);
+  sprintf(filenameDrift, "exp%d-period%dms-timeDrift", t->expNum+1, t->period);
   FILE *fDrift = fopen(filenameDrift, "w");
 
   for (int i=0; i<t->tasksToExecute; i++) {
@@ -29,7 +46,28 @@ static void *stopFcn(void *args) {
 
 
 // TODO: Implement timerFcn().
+static void *timerFcn(void *args){
+  struct timeval tPush = *(struct timeval *)args;
+  long secs = (double) tPush.tv_sec;
+  long usecs = (double) tPush.tv_usec;
 
+  double resFcn[4] = {};
+
+  //Random math work
+  for (int i=0; i<1000; i++){
+    resFcn[1] += cosh(usecs);
+    resFcn[2] += sinh(usecs);
+    resFcn[3] += tanh(usecs);
+  }
+  resFcn[0] = sqrt(fabs(resFcn[1] + resFcn[2] + resFcn[3]));
+
+  double *heap = (double *)calloc(sizeof(*resFcn), sizeof(resFcn));
+  for (int i=0; i<sizeof(*resFcn); sizeof(resFcn), i++){
+    heap[i] = resFcn[i];
+  }
+  free(heap);
+
+}
 
 Timer *timerInit(int period, Queue *queue, int expNum) {
   if (period < 1) {
@@ -93,7 +131,7 @@ void timerStartat(Timer *t, int year, int month, int day, int hour, int minute, 
   timerStart(t);
 }
 
-// Function to calculate the time difference in milliseconds
-int getTimeDifference(struct timeval start, struct timeval end) {
-  return ((end.tv_sec - start.tv_sec) * 1000) + ((end.tv_usec - start.tv_usec) / 1000);
+// Function to calculate the time difference in microseconds
+long getTimeDifference(struct timeval start, struct timeval end) {
+  return ((end.tv_sec - start.tv_sec) * 1000000) + ((end.tv_usec - start.tv_usec));
 }

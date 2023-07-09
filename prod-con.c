@@ -12,14 +12,13 @@ void *producer(void* args) {
   struct timeval startTime;
   struct timeval currentTime;
 
+  // startFcn() not used, everything is done in timerInit()
   if (t->startFcn != NULL) {
     t->startFcn(NULL);
   }
-
+  
   for (int i=0; i<t->tasksToExecute; i++) {
     gettimeofday(&startTime, NULL);
-
-    usleep(5000);
 
     pthread_mutex_lock(t->queue->mut);
     if (t->queue->full) {
@@ -29,8 +28,9 @@ void *producer(void* args) {
       }
 
     } else {
-      printf("added item\n");
-      // TODO: Fill the job arguments (if any).
+      //! Print
+      // printf("added item\n");
+      job.data = &startTime;
       queueAdd(t->queue, job);
     }    
 
@@ -40,12 +40,13 @@ void *producer(void* args) {
     gettimeofday(&currentTime, NULL);
 
     t->tDrift[i] = getTimeDifference(startTime, currentTime);
-    int sleep_ms = t->period - t->tDrift[i];
-    if (sleep_ms < 0 && sleep_ms > t->period) {
-      sleep_ms = 0;
+    unsigned long sleep_us = (long)t->period * 1000 - t->tDrift[i];
+    if (sleep_us < 0 && sleep_us > t->period * 1000) {
+      sleep_us = 0;
     }
-    printf("sleep%d\n", sleep_ms);
-    usleep(sleep_ms * 1000);
+    //! Print
+    // printf("sleep%d\n", sleep_us);
+    usleep(sleep_us);
   }
 
   if (t->stopFcn != NULL) {
@@ -59,6 +60,9 @@ void *consumer(void* args) {
   ConArgs *conArgs = (ConArgs *)args;
   Job job;
 
+  struct timeval tJobStart;
+  struct timeval tJobEnd;
+
   while (1) {
     pthread_mutex_lock(conArgs->queue->mut);
     if (conArgs->queue->empty) {
@@ -71,12 +75,13 @@ void *consumer(void* args) {
     }
 
     queuePop(conArgs->queue, &job);
+    //! Print
     printf("popped\n");
 
     pthread_mutex_unlock(conArgs->queue->mut);
     pthread_cond_signal(conArgs->queue->notFull);
 
-    // start timestamp
+    gettimeofday(&tJobStart, NULL);
     
     if (job.jobFcn != NULL) {
       job.jobFcn(job.data);

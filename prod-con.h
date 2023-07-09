@@ -6,7 +6,7 @@
 typedef struct{
   int expNum;
   Queue *queue;
-  int *tOut;
+  long *tOut;
 } ConArgs;
 
 void *producer(void *args);

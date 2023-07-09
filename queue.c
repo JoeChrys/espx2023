@@ -3,6 +3,7 @@
 Queue *queueInit(void) {
   Queue *q = (Queue *)malloc(sizeof(Queue));
   if (q == NULL) {
+    fprintf(stderr, "queue: queue init failed");
     return NULL;
   }
 
@@ -12,10 +13,24 @@ Queue *queueInit(void) {
   q->tail = 0;
 
   q->mut = (pthread_mutex_t *)malloc(sizeof (pthread_mutex_t));
+  if (q->mut == NULL) {
+    fprintf(stderr, "queue: mutex key init failed");
+    return NULL;
+  }
   pthread_mutex_init(q->mut, NULL);
+
   q->notFull = (pthread_cond_t *)malloc(sizeof (pthread_cond_t));
+  if (q == NULL) {
+    fprintf(stderr, "queue: notFull init failed");
+    return NULL;
+  }
   pthread_cond_init (q->notFull, NULL);
+
   q->notEmpty = (pthread_cond_t *)malloc(sizeof (pthread_cond_t));
+  if (q == NULL) {
+    fprintf(stderr, "queue: notEmpty init failed");
+    return NULL;
+  }
   pthread_cond_init (q->notEmpty, NULL);
 	
   return q;
