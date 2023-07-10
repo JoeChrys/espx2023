@@ -24,7 +24,7 @@ void *producer(void* args) {
     if (t->queue->full) {
 
       if (t->errorFcn != NULL) {
-        t->errorFcn(NULL);
+        t->errorFcn(&t->lostJobs);
       }
 
     } else {
@@ -40,8 +40,8 @@ void *producer(void* args) {
     gettimeofday(&currentTime, NULL);
 
     t->tDrift[i] = getTimeDifference(startTime, currentTime);
-    unsigned long sleep_us = (long)t->period * 1000 - t->tDrift[i];
-    if (sleep_us < 0 && sleep_us > t->period * 1000) {
+    unsigned long sleep_us = (long)t->period * 1000000 - t->tDrift[i];
+    if (sleep_us < 0 && sleep_us > t->period * 1000000) {
       sleep_us = 0;
     }
     //! Print
@@ -60,8 +60,9 @@ void *consumer(void* args) {
   ConArgs *conArgs = (ConArgs *)args;
   Job job;
 
-  struct timeval tJobStart;
-  struct timeval tJobEnd;
+  struct timeval tPop;
+
+
 
   while (1) {
     pthread_mutex_lock(conArgs->queue->mut);
@@ -76,12 +77,18 @@ void *consumer(void* args) {
 
     queuePop(conArgs->queue, &job);
     //! Print
-    printf("popped\n");
+    // printf("popped\n");
 
     pthread_mutex_unlock(conArgs->queue->mut);
     pthread_cond_signal(conArgs->queue->notFull);
 
-    gettimeofday(&tJobStart, NULL);
+    gettimeofday(&tPop, NULL);
+
+    pthread_mutex_lock(conArgs->mutOut);
+    if(*(conArgs->fileUsed) == 1){
+      pthread_cond_wait(conArgs->notUsed, conArgs->mutOut);
+
+    }
     
     if (job.jobFcn != NULL) {
       job.jobFcn(job.data);

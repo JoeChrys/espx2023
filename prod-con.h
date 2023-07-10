@@ -4,9 +4,14 @@
 #include "queue.h"
 
 typedef struct{
-  int expNum;
   Queue *queue;
+
+  int expNum;
   long *tOut;
+
+  pthread_mutex_t *mutOut;
+  bool *fileUsed;
+  pthread_cond_t *notUsed;
 } ConArgs;
 
 void *producer(void *args);

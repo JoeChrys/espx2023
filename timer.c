@@ -44,8 +44,6 @@ static void *stopFcn(void *args) {
   free(t->tDrift);
 }
 
-
-// TODO: Implement timerFcn().
 static void *timerFcn(void *args){
   struct timeval tPush = *(struct timeval *)args;
   long secs = (double) tPush.tv_sec;
@@ -54,19 +52,24 @@ static void *timerFcn(void *args){
   double resFcn[4] = {};
 
   //Random math work
-  for (int i=0; i<1000; i++){
+  for (int i=0; i<20; i++){
     resFcn[1] += cosh(usecs);
     resFcn[2] += sinh(usecs);
     resFcn[3] += tanh(usecs);
   }
   resFcn[0] = sqrt(fabs(resFcn[1] + resFcn[2] + resFcn[3]));
 
+  //Random memory storing
   double *heap = (double *)calloc(sizeof(*resFcn), sizeof(resFcn));
   for (int i=0; i<sizeof(*resFcn); sizeof(resFcn), i++){
     heap[i] = resFcn[i];
   }
   free(heap);
 
+}
+
+static void *errorFcn(void *args){
+  *(int *)args = *((int *) args) + 1;
 }
 
 Timer *timerInit(int period, Queue *queue, int expNum) {
@@ -89,8 +92,8 @@ Timer *timerInit(int period, Queue *queue, int expNum) {
 
   t->startFcn = NULL;
   t->stopFcn = stopFcn;
-  t->timerFcn = NULL;
-  t->errorFcn = NULL;
+  t->timerFcn = timerFcn;
+  t->errorFcn = errorFcn;
 
   t->tIn = (int *)malloc(t->tasksToExecute * sizeof(int));
   if (t->tIn == NULL) {
