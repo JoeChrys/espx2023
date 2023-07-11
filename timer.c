@@ -135,6 +135,6 @@ void timerStartat(Timer *t, int year, int month, int day, int hour, int minute, 
 }
 
 // Function to calculate the time difference in microseconds
-long getTimeDifference(struct timeval start, struct timeval end) {
+int getTimeDifference(struct timeval start, struct timeval end) {
   return ((end.tv_sec - start.tv_sec) * 1000000) + ((end.tv_usec - start.tv_usec));
 }

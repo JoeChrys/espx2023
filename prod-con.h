@@ -7,11 +7,10 @@ typedef struct{
   Queue *queue;
 
   int expNum;
-  long *tOut;
+  int *tOut;
 
   pthread_mutex_t *mutOut;
-  bool *fileUsed;
-  pthread_cond_t *notUsed;
+  int *tasksDone;
 } ConArgs;
 
 void *producer(void *args);

@@ -31,6 +31,6 @@ void timerStart(Timer *t);
 
 void timerStartat(Timer *t, int year, int month, int day, int hour, int minute, int second);
 
-long getTimeDifference(struct timeval start, struct timeval end);
+int getTimeDifference(struct timeval start, struct timeval end);
 
 #endif /* TIMER_H */

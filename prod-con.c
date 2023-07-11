@@ -40,12 +40,12 @@ void *producer(void* args) {
     gettimeofday(&currentTime, NULL);
 
     t->tDrift[i] = getTimeDifference(startTime, currentTime);
-    unsigned long sleep_us = (long)t->period * 1000000 - t->tDrift[i];
-    if (sleep_us < 0 && sleep_us > t->period * 1000000) {
+    unsigned long sleep_us = (long)t->period * 1000 - t->tDrift[i];
+    if (sleep_us < 0 && sleep_us > t->period * 1000) {
       sleep_us = 0;
     }
     //! Print
-    // printf("sleep%d\n", sleep_us);
+    printf("sleep%d\n", sleep_us);
     usleep(sleep_us);
   }
 
@@ -62,8 +62,6 @@ void *consumer(void* args) {
 
   struct timeval tPop;
 
-
-
   while (1) {
     pthread_mutex_lock(conArgs->queue->mut);
     if (conArgs->queue->empty) {
@@ -77,22 +75,35 @@ void *consumer(void* args) {
 
     queuePop(conArgs->queue, &job);
     //! Print
-    // printf("popped\n");
+    printf("popped\n");
 
     pthread_mutex_unlock(conArgs->queue->mut);
     pthread_cond_signal(conArgs->queue->notFull);
 
     gettimeofday(&tPop, NULL);
-
-    pthread_mutex_lock(conArgs->mutOut);
-    if(*(conArgs->fileUsed) == 1){
-      pthread_cond_wait(conArgs->notUsed, conArgs->mutOut);
-
-    }
+    struct timeval tPush;
+    tPush = *(struct timeval *)job.data;
     
+    pthread_mutex_lock(conArgs->mutOut);
+
+    //! Prints
+    printf ("before %d\n", *(conArgs->tasksDone));
+    conArgs->tOut[*(conArgs->tasksDone)] = getTimeDifference(tPush, tPop);
+    *(conArgs->tasksDone) += 1;
+    printf ("tOut %d\n", conArgs->tOut[*(conArgs->tasksDone)]);
+    printf ("after %d\n", *(conArgs->tasksDone));
+
+    pthread_mutex_unlock(conArgs->mutOut);
+
+    //! Print
+    printf("writen to tOut\n");
+
     if (job.jobFcn != NULL) {
       job.jobFcn(job.data);
     }
+
+    //! Print
+    printf("job done\n");
 
     // TODO: Measure time and save it in array in ConsArgs.
     // conArgs->tOut = 
