@@ -25,20 +25,33 @@ static void *stopFcn(void *args) {
   Timer *t = (Timer *)args;
 
   char filenameIn[32] = {};
-  sprintf(filenameIn, "exp%d-period%d-timeIn", t->expNum+1, t->period);
+  sprintf(filenameIn, "exp%d-period%dms-timeIn", t->expNum+1, t->period);
   FILE *fIn = fopen(filenameIn, "w");
 
   char filenameDrift[32] = {};
   sprintf(filenameDrift, "exp%d-period%dms-timeDrift", t->expNum+1, t->period);
   FILE *fDrift = fopen(filenameDrift, "w");
 
+  char filenameLostJobs[32] = {};
+  sprintf(filenameLostJobs, "exp%d-period%dms-lostJobs", t->expNum+1, t->period);
+  FILE *fJobsLost = fopen(filenameLostJobs, "w");
+
+  char filenameOverDrift[32] = {};
+  sprintf(filenameOverDrift, "exp%d-period%dms-overDrift", t->expNum+1, t->period);
+  FILE *fOverDrift = fopen(filenameOverDrift, "w");
+
   for (int i=0; i<t->tasksToExecute; i++) {
     fprintf(fIn, "%d\n", t->tIn[i]);
     fprintf(fDrift, "%d\n", t->tDrift[i]);
   }
 
+  fprintf(fJobsLost, "%d\n", t->lostJobs);
+  fprintf(fOverDrift, "%d\n", t->overDriftCnt);
+
   fclose(fIn);
   fclose(fDrift);
+  fclose(fJobsLost);
+  fclose(fOverDrift);
 
   free(t->tIn);
   free(t->tDrift);

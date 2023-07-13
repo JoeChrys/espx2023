@@ -5,7 +5,7 @@
 
 int main() {
 
-  int periods[] = {10};
+  int periods[] = {1000, 100, 10};
   int *tOut;
   pthread_mutex_t *mutOut = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
   if (mutOut == NULL) {
@@ -25,15 +25,13 @@ int main() {
     tOut = (int *)malloc(t->tasksToExecute*sizeof(int));
     printf("size of tout is : %d\n", sizeof(tOut));
 
-    int tasksDone = 0;
-    
+    resetTasksDone();
     
     ConArgs args = {
       .expNum = i,
       .queue = queue,
       .tOut = tOut,
-      .mutOut = mutOut,
-      .tasksDone = &tasksDone
+      .mutOut = mutOut
     };
 
     // Creates consumers.
@@ -55,6 +53,14 @@ int main() {
     }
     consumerSetQuit(false);
 
+    char filenameOut[32];
+    sprintf(filenameOut, "exp%d-period%dms-tOut", t->expNum, t->period);
+    FILE *fOut = fopen(filenameOut, "w");
+    for (int i=0; i<getTasksDone(); i++){
+      fprintf(fOut, "%d\n", tOut[i]);
+    }
+    fclose(fOut);
+
     free(tOut);
     free(t);
 
@@ -69,24 +75,24 @@ int main() {
   int tTotal = sizeof(periods)/sizeof(*periods);
   Timer **t = (Timer **)calloc(tTotal, sizeof(Timer));
 
-  int tasksDone = 0;
+  resetTasksDone();
 
   int memsize = 0;
+  int totalTasks = 0;
   for (int i=0; i<tTotal; i++) {
     t[i] = timerInit(periods[i], queue, i);
-    memsize += t[i]->tasksToExecute * sizeof(int);
+    totalTasks += t[i]->tasksToExecute;
     //! PRINT
     printf("timer with period %d started\n", t[i]->period);
   }
-
+  memsize = totalTasks * sizeof(int);
   tOut = (int *)malloc(memsize);
 
   ConArgs args = {
     .expNum = 4,
     .queue = queue,
     .tOut = tOut,
-    .mutOut = mutOut,
-    .tasksDone = &tasksDone
+    .mutOut = mutOut
   };
 
   // Creates consumers.
@@ -111,6 +117,14 @@ int main() {
     pthread_join(conThreads[j], NULL);
   }
   consumerSetQuit(false);
+
+  char filenameOut[32];
+  sprintf(filenameOut, "exp%d-tOut", t[0]->expNum);
+  FILE *fOut = fopen(filenameOut, "w");
+  for (int i=0; i<getTasksDone(); i++){
+    fprintf(fOut, "%d\n", tOut[i]);
+  }
+    fclose(fOut);
 
   for (int i=0; i<tTotal; i++){
     free(t[i]);

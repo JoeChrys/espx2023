@@ -2,6 +2,7 @@
 #include "timer.h"
 
 volatile bool quit = false;
+volatile int tasksDone = 0;
 
 void *producer(void* args) {
   Timer *t = (Timer *)args;
@@ -90,11 +91,11 @@ void *consumer(void* args) {
     pthread_mutex_lock(conArgs->mutOut);
 
     //! Prints
-    printf ("before %d\n", *(conArgs->tasksDone));
-    conArgs->tOut[*(conArgs->tasksDone)] = getTimeDifference(tPush, tPop);
-    *(conArgs->tasksDone) += 1;
-    printf ("tOut %d\n", conArgs->tOut[*(conArgs->tasksDone)]);
-    printf ("after %d\n", *(conArgs->tasksDone));
+    printf ("before %d\n", tasksDone);
+    conArgs->tOut[tasksDone] = getTimeDifference(tPush, tPop);
+    tasksDone += 1;
+    printf ("tOut %d\n", conArgs->tOut[tasksDone]);
+    printf ("after %d\n", tasksDone);
 
     pthread_mutex_unlock(conArgs->mutOut);
 
@@ -107,10 +108,6 @@ void *consumer(void* args) {
 
     //! Print
     printf("job done\n");
-
-    // TODO: Measure time and save it in array in ConsArgs.
-    // conArgs->tOut = 
-    // TODO: Create mutex in ConArgs to save the time..
   }
   
   pthread_exit(NULL);
@@ -118,4 +115,12 @@ void *consumer(void* args) {
 
 void consumerSetQuit(bool flag) {
   quit = flag;
+}
+
+int getTasksDone(void) {
+  return tasksDone;
+}
+
+void resetTasksDone(void){
+  tasksDone = 0;
 }

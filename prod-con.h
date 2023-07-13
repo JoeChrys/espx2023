@@ -8,9 +8,8 @@ typedef struct{
 
   int expNum;
   int *tOut;
-
   pthread_mutex_t *mutOut;
-  int *tasksDone;
+
 } ConArgs;
 
 void *producer(void *args);
@@ -18,5 +17,8 @@ void *producer(void *args);
 void *consumer(void *args);
 
 void consumerSetQuit(bool flag);
+
+int getTasksDone(void);
+void resetTasksDone(void);
 
 #endif /* PROD_CON_H */

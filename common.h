@@ -12,6 +12,6 @@
 // #define EXPERIMENTS_NUM     (4)
 #define QUEUE_SIZE          (5)
 #define NUMBER_OF_THREADS   (4)
-#define RUNTIME_SECS        (5*60)
+#define RUNTIME_SECS        (5)
 
 #endif /* COMMON_H */
