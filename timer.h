@@ -21,6 +21,7 @@ typedef struct{
   int *tIn;
   int *tDrift;
   int lostJobs;
+  int overDriftCnt;
 
   int expNum;
 } Timer;

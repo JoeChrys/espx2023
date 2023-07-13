@@ -5,7 +5,7 @@
 
 int main() {
 
-  int periods[] = {1000, 100, 10};
+  int periods[] = {10};
   int *tOut;
   pthread_mutex_t *mutOut = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
   if (mutOut == NULL) {
@@ -23,6 +23,7 @@ int main() {
     Timer *t = timerInit(periods[i], queue, i);
 
     tOut = (int *)malloc(t->tasksToExecute*sizeof(int));
+    printf("size of tout is : %d\n", sizeof(tOut));
 
     int tasksDone = 0;
     

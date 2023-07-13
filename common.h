@@ -9,9 +9,9 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-#define EXPERIMENTS_NUM     (4)
-#define QUEUE_SIZE          (20)
+// #define EXPERIMENTS_NUM     (4)
+#define QUEUE_SIZE          (5)
 #define NUMBER_OF_THREADS   (4)
-#define RUNTIME_SECS        (5)
+#define RUNTIME_SECS        (5*60)
 
 #endif /* COMMON_H */

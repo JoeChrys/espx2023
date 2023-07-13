@@ -22,16 +22,18 @@ void *producer(void* args) {
 
     pthread_mutex_lock(t->queue->mut);
     if (t->queue->full) {
-
       if (t->errorFcn != NULL) {
         t->errorFcn(&t->lostJobs);
       }
-
     } else {
       //! Print
       // printf("added item\n");
-      job.data = &startTime;
+      gettimeofday(&currentTime, NULL);
+
+      job.data = &currentTime;
       queueAdd(t->queue, job);
+
+      t->tIn[i] = getTimeDifference(startTime, currentTime);
     }    
 
     pthread_mutex_unlock(t->queue->mut);
@@ -40,9 +42,10 @@ void *producer(void* args) {
     gettimeofday(&currentTime, NULL);
 
     t->tDrift[i] = getTimeDifference(startTime, currentTime);
-    unsigned long sleep_us = (long)t->period * 1000 - t->tDrift[i];
+    int sleep_us = t->period * 1000 - t->tDrift[i];
     if (sleep_us < 0 && sleep_us > t->period * 1000) {
       sleep_us = 0;
+      t->overDriftCnt++;
     }
     //! Print
     printf("sleep%d\n", sleep_us);

@@ -52,16 +52,22 @@ static void *timerFcn(void *args){
   double resFcn[4] = {};
 
   //Random math work
-  for (int i=0; i<20; i++){
-    resFcn[1] += cosh(usecs);
-    resFcn[2] += sinh(usecs);
-    resFcn[3] += tanh(usecs);
+  for (int i=0; i<200; i++){
+    if (i%2) {
+      resFcn[1] += cos(usecs);
+      resFcn[2] += sin(usecs);
+      resFcn[3] += tan(usecs);
+    } else {
+      resFcn[1] -= cos(secs);
+      resFcn[2] -= sin(secs);
+      resFcn[3] -= tan(secs);
+    }
   }
   resFcn[0] = sqrt(fabs(resFcn[1] + resFcn[2] + resFcn[3]));
 
   //Random memory storing
   double *heap = (double *)calloc(sizeof(*resFcn), sizeof(resFcn));
-  for (int i=0; i<sizeof(*resFcn); sizeof(resFcn), i++){
+  for (int i=0; i<sizeof(resFcn)/sizeof(*resFcn); i++){
     heap[i] = resFcn[i];
   }
   free(heap);
@@ -105,6 +111,9 @@ Timer *timerInit(int period, Queue *queue, int expNum) {
     fprintf (stderr, "timer: tDrift init failed.\n");
     return NULL;
   }
+
+  t->lostJobs = 0;
+  t->overDriftCnt = 0;
   
   return t;
 }
