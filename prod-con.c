@@ -51,7 +51,7 @@ void *producer(void* args) {
       t->overDriftCnt++;
     }
     //! Print
-    printf("PROD: sleep%d\n", sleep_us);
+    // printf("PROD: sleep%d\n", sleep_us);
     usleep(sleep_us);
   }
 
@@ -95,7 +95,7 @@ void *consumer(void* args) {
     
     conArgs->tOut[tasksDone] = getTimeDifference(tPush, tPop);
     //! Print
-    printf ("CON: tOut %d\n", conArgs->tOut[tasksDone]);
+    // printf ("CON: tOut %d\n", conArgs->tOut[tasksDone]);
     tasksDone += 1;
     
     pthread_mutex_unlock(conArgs->mutOut);
@@ -109,7 +109,7 @@ void *consumer(void* args) {
     free(job.data);
 
     //! Print
-    printf("CON: job %d done\n", tasksDone);
+    // printf("CON: job %d done\n", tasksDone);
   }
   
   pthread_exit(NULL);

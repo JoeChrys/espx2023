@@ -2,3 +2,4 @@
 build/
 example.c
 exp*
+*.gch

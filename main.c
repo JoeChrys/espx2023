@@ -14,61 +14,62 @@ int main() {
   }
   pthread_mutex_init(mutOut, NULL);
 
-  // // EXP 1-2-3-...
-  // for (int i=0; i<sizeof(periods)/sizeof(*periods); i++) {
-  //   //! Print
-  //   printf("started experiment %d\n", i);
-  //   Queue *queue = queueInit();
+  // EXP 1-2-3-...
+  for (int i=0; i<sizeof(periods)/sizeof(*periods); i++) {
+    //! Print
+    // printf("started experiment %d\n", i);
+    Queue *queue = queueInit();
 
-  //   Timer *t = timerInit(periods[i], queue, i);
+    Timer *t = timerInit(periods[i], queue, i);
 
-  //   tOut = (int *)malloc(t->tasksToExecute*sizeof(int));
-  //   printf("size of tout is : %d\n", sizeof(tOut));
+    tOut = (int *)malloc(t->tasksToExecute*sizeof(int));
+    //! Print
+    // printf("size of tout is : %d\n", sizeof(tOut));
 
-  //   resetTasksDone();
+    resetTasksDone();
     
-  //   ConArgs args = {
-  //     .expNum = i,
-  //     .queue = queue,
-  //     .tOut = tOut,
-  //     .mutOut = mutOut
-  //   };
+    ConArgs args = {
+      .expNum = i,
+      .queue = queue,
+      .tOut = tOut,
+      .mutOut = mutOut
+    };
 
-  //   // Creates consumers.
-  //   pthread_t conThreads[NUMBER_OF_THREADS];
-  //   for (int j=0; j<NUMBER_OF_THREADS; j++) {
-  //     pthread_create(&conThreads[j], NULL, consumer, &args);
-  //   }
+    // Creates consumers.
+    pthread_t conThreads[NUMBER_OF_THREADS];
+    for (int j=0; j<NUMBER_OF_THREADS; j++) {
+      pthread_create(&conThreads[j], NULL, consumer, &args);
+    }
 
-  //   timerStart(t);
+    timerStart(t);
 
-  //   // Waits for producers to end.
-  //   pthread_join(t->proThread, NULL);
+    // Waits for producers to end.
+    pthread_join(t->proThread, NULL);
 
-  //   // Waits for consumers to end.
-  //   consumerSetQuit(true);
-  //   pthread_cond_broadcast(queue->notEmpty);
-  //   for (int j=0; j<NUMBER_OF_THREADS; j++){
-  //     pthread_join(conThreads[j], NULL);
-  //   }
-  //   consumerSetQuit(false);
+    // Waits for consumers to end.
+    consumerSetQuit(true);
+    pthread_cond_broadcast(queue->notEmpty);
+    for (int j=0; j<NUMBER_OF_THREADS; j++){
+      pthread_join(conThreads[j], NULL);
+    }
+    consumerSetQuit(false);
 
-  //   char filenameOut[32];
-  //   sprintf(filenameOut, "exp%d-period%dms-tOut", t->expNum+1, t->period);
-  //   FILE *fOut = fopen(filenameOut, "w");
-  //   for (int i=0; i<getTasksDone(); i++){
-  //     fprintf(fOut, "%d\n", tOut[i]);
-  //   }
-  //   fclose(fOut);
+    char filenameOut[32];
+    sprintf(filenameOut, "exp%d-period%dms-tOut", t->expNum+1, t->period);
+    FILE *fOut = fopen(filenameOut, "w");
+    for (int i=0; i<getTasksDone(); i++){
+      fprintf(fOut, "%d\n", tOut[i]);
+    }
+    fclose(fOut);
 
-  //   free(tOut);
-  //   free(t);
+    free(tOut);
+    free(t);
 
-  //   queueDelete(queue);
-  // }
+    queueDelete(queue);
+  }
 
   //! Print
-  printf("started experiment 4\n");
+  // printf("started experiment 4\n");
   
   Queue *queue = queueInit();
 
@@ -83,7 +84,7 @@ int main() {
     t[i] = timerInit(periods[i], queue, 3);
     totalTasks += t[i]->tasksToExecute;
     //! PRINT
-    printf("timer with period %d started\n", t[i]->period);
+    // printf("timer with period %d started\n", t[i]->period);
   }
   memsize = totalTasks * sizeof(int);
   tOut = (int *)malloc(memsize);
