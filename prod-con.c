@@ -19,6 +19,7 @@ void *producer(void* args) {
   }
   
   for (int i=0; i<t->tasksToExecute; i++) {
+    struct timeval *tPush = (struct timeval *)malloc(sizeof(struct timeval));
     gettimeofday(&startTime, NULL);
 
     pthread_mutex_lock(t->queue->mut);
@@ -30,8 +31,9 @@ void *producer(void* args) {
       //! Print
       // printf("added item\n");
       gettimeofday(&currentTime, NULL);
+      *tPush = currentTime;
 
-      job.data = &currentTime;
+      job.data = tPush;
       queueAdd(t->queue, job);
 
       t->tIn[i] = getTimeDifference(startTime, currentTime);
@@ -49,7 +51,7 @@ void *producer(void* args) {
       t->overDriftCnt++;
     }
     //! Print
-    printf("sleep%d\n", sleep_us);
+    printf("PROD: sleep%d\n", sleep_us);
     usleep(sleep_us);
   }
 
@@ -68,7 +70,7 @@ void *consumer(void* args) {
 
   while (1) {
     pthread_mutex_lock(conArgs->queue->mut);
-    if (conArgs->queue->empty) {
+    while (conArgs->queue->empty) {
       pthread_cond_wait(conArgs->queue->notEmpty, conArgs->queue->mut);
 
       if (quit) {
@@ -79,7 +81,7 @@ void *consumer(void* args) {
 
     queuePop(conArgs->queue, &job);
     //! Print
-    printf("popped\n");
+    // printf("popped\n");
 
     pthread_mutex_unlock(conArgs->queue->mut);
     pthread_cond_signal(conArgs->queue->notFull);
@@ -90,24 +92,24 @@ void *consumer(void* args) {
     
     pthread_mutex_lock(conArgs->mutOut);
 
-    //! Prints
-    printf ("before %d\n", tasksDone);
+    
     conArgs->tOut[tasksDone] = getTimeDifference(tPush, tPop);
+    //! Print
+    printf ("CON: tOut %d\n", conArgs->tOut[tasksDone]);
     tasksDone += 1;
-    printf ("tOut %d\n", conArgs->tOut[tasksDone]);
-    printf ("after %d\n", tasksDone);
-
+    
     pthread_mutex_unlock(conArgs->mutOut);
 
     //! Print
-    printf("writen to tOut\n");
+    // printf("writen to tOut\n");
 
     if (job.jobFcn != NULL) {
       job.jobFcn(job.data);
     }
+    free(job.data);
 
     //! Print
-    printf("job done\n");
+    printf("CON: job %d done\n", tasksDone);
   }
   
   pthread_exit(NULL);

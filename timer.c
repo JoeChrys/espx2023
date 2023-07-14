@@ -41,8 +41,11 @@ static void *stopFcn(void *args) {
   FILE *fOverDrift = fopen(filenameOverDrift, "w");
 
   for (int i=0; i<t->tasksToExecute; i++) {
-    fprintf(fIn, "%d\n", t->tIn[i]);
     fprintf(fDrift, "%d\n", t->tDrift[i]);
+  }
+
+  for (int i=0; i<(t->tasksToExecute - t->lostJobs); i++){
+    fprintf(fIn, "%d\n", t->tIn[i]);
   }
 
   fprintf(fJobsLost, "%d\n", t->lostJobs);
@@ -65,7 +68,7 @@ static void *timerFcn(void *args){
   double resFcn[4] = {};
 
   //Random math work
-  for (int i=0; i<200; i++){
+  for (int i=0; i<100; i++){
     if (i%2) {
       resFcn[1] += cos(usecs);
       resFcn[2] += sin(usecs);
