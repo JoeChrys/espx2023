@@ -1,0 +1,112 @@
+File: /home/joe/ECE/results/q1t4/data/exp1-period1000ms-timeDrift
+Min: 6.0
+Max: 174.0
+Median: 7.0
+Mean: 37.03333333333333
+Standard Deviation: 52.501259244157396
+
+File: /home/joe/ECE/results/q1t4/data/exp1-period1000ms-timeIn
+Min: 0.0
+Max: 2.0
+Median: 1.0
+Mean: 0.6333333333333333
+Standard Deviation: 0.4988876515698589
+
+File: /home/joe/ECE/results/q1t4/data/exp1-period1000ms-tOut
+Min: 19.0
+Max: 44.0
+Median: 29.0
+Mean: 29.566666666666666
+Standard Deviation: 5.780330632604178
+
+File: /home/joe/ECE/results/q1t4/data/exp2-period100ms-timeDrift
+Min: 5.0
+Max: 158.0
+Median: 6.0
+Mean: 27.5175
+Standard Deviation: 44.29241500622125
+
+File: /home/joe/ECE/results/q1t4/data/exp2-period100ms-timeIn
+Min: 0.0
+Max: 4.0
+Median: 1.0
+Mean: 0.635
+Standard Deviation: 0.4933980813366289
+
+File: /home/joe/ECE/results/q1t4/data/exp2-period100ms-tOut
+Min: 18.0
+Max: 58.0
+Median: 29.0
+Mean: 27.83
+Standard Deviation: 4.98876404199143
+
+File: /home/joe/ECE/results/q1t4/data/exp3-period10ms-timeDrift
+Min: 5.0
+Max: 187.0
+Median: 6.0
+Mean: 9.524166666666666
+Standard Deviation: 17.333673854828227
+
+File: /home/joe/ECE/results/q1t4/data/exp3-period10ms-timeIn
+Min: 0.0
+Max: 1.0
+Median: 1.0
+Mean: 0.63475
+Standard Deviation: 0.48150019470401045
+
+File: /home/joe/ECE/results/q1t4/data/exp3-period10ms-tOut
+Min: 17.0
+Max: 87.0
+Median: 28.0
+Mean: 27.675
+Standard Deviation: 2.6989272560284636
+
+File: /home/joe/ECE/results/q1t4/data/exp4-period10ms-timeDrift
+Min: 5.0
+Max: 184.0
+Median: 10.0
+Mean: 14.138666666666667
+Standard Deviation: 24.928015128008532
+
+File: /home/joe/ECE/results/q1t4/data/exp4-period10ms-timeIn
+Min: 0.0
+Max: 25.0
+Median: 1.0
+Mean: 0.6518333333333334
+Standard Deviation: 0.5684305635304594
+
+File: /home/joe/ECE/results/q1t4/data/exp4-period100ms-timeDrift
+Min: 5.0
+Max: 29.0
+Median: 7.0
+Mean: 8.4225
+Standard Deviation: 2.8211688623689293
+
+File: /home/joe/ECE/results/q1t4/data/exp4-period100ms-timeIn
+Min: 0.0
+Max: 1.0
+Median: 1.0
+Mean: 0.6475
+Standard Deviation: 0.47774862637165166
+
+File: /home/joe/ECE/results/q1t4/data/exp4-period1000ms-timeDrift
+Min: 5.0
+Max: 14.0
+Median: 10.0
+Mean: 8.533333333333333
+Standard Deviation: 2.7200898677964465
+
+File: /home/joe/ECE/results/q1t4/data/exp4-period1000ms-timeIn
+Min: 0.0
+Max: 1.0
+Median: 1.0
+Mean: 0.625
+Standard Deviation: 0.4841229182759271
+
+File: /home/joe/ECE/results/q1t4/data/exp4-tOut
+Min: 3.0
+Max: 136.0
+Median: 28.0
+Mean: 27.130405405405405
+Standard Deviation: 3.574102775027219
+

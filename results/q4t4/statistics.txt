@@ -1,0 +1,112 @@
+File: ./data/exp1-period1000ms-timeDrift
+Min: 6.0
+Max: 186.0
+Median: 74.5
+Mean: 71.675
+Standard Deviation: 64.5217227632162
+
+File: ./data/exp1-period1000ms-timeIn
+Min: 0.0
+Max: 7.0
+Median: 1.0
+Mean: 0.8166666666666667
+Standard Deviation: 0.7301065371269837
+
+File: ./data/exp1-period1000ms-tOut
+Min: 19.0
+Max: 45.0
+Median: 28.5
+Mean: 26.583333333333332
+Standard Deviation: 5.4887511228774875
+
+File: ./data/exp2-period100ms-timeDrift
+Min: 5.0
+Max: 189.0
+Median: 6.0
+Mean: 27.0625
+Standard Deviation: 44.17561839314382
+
+File: ./data/exp2-period100ms-timeIn
+Min: 0.0
+Max: 2.0
+Median: 1.0
+Mean: 0.6091666666666666
+Standard Deviation: 0.4913409938344471
+
+File: ./data/exp2-period100ms-tOut
+Min: 18.0
+Max: 64.0
+Median: 30.0
+Mean: 29.02
+Standard Deviation: 6.170191785241904
+
+File: ./data/exp3-period10ms-timeDrift
+Min: 5.0
+Max: 182.0
+Median: 6.0
+Mean: 9.4635
+Standard Deviation: 17.347742439579854
+
+File: ./data/exp3-period10ms-timeIn
+Min: 0.0
+Max: 2.0
+Median: 1.0
+Mean: 0.6224166666666666
+Standard Deviation: 0.48495445805651577
+
+File: ./data/exp3-period10ms-tOut
+Min: 17.0
+Max: 88.0
+Median: 30.0
+Mean: 30.046
+Standard Deviation: 5.134625984431582
+
+File: ./data/exp4-period10ms-timeDrift
+Min: 5.0
+Max: 217.0
+Median: 6.0
+Mean: 6.514666666666667
+Standard Deviation: 2.9483529111842923
+
+File: ./data/exp4-period10ms-timeIn
+Min: 0.0
+Max: 32.0
+Median: 1.0
+Mean: 0.6334166666666666
+Standard Deviation: 0.5615751594597309
+
+File: ./data/exp4-period100ms-timeDrift
+Min: 5.0
+Max: 135.0
+Median: 7.0
+Mean: 10.2875
+Standard Deviation: 12.078969758082296
+
+File: ./data/exp4-period100ms-timeIn
+Min: 0.0
+Max: 11.0
+Median: 1.0
+Mean: 0.7158333333333333
+Standard Deviation: 0.7528275403806343
+
+File: ./data/exp4-period1000ms-timeDrift
+Min: 6.0
+Max: 27.0
+Median: 7.0
+Mean: 8.983333333333333
+Standard Deviation: 4.17728646638248
+
+File: ./data/exp4-period1000ms-timeIn
+Min: 0.0
+Max: 3.0
+Median: 1.0
+Mean: 0.6833333333333333
+Standard Deviation: 0.5320296566504122
+
+File: ./data/exp4-tOut
+Min: 2.0
+Max: 141.0
+Median: 29.0
+Mean: 29.637687687687688
+Standard Deviation: 4.530754771266694
+
